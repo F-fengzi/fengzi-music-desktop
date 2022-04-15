@@ -1,0 +1,38 @@
+<!doctype html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>罕见错误~</title>
+    <style>
+        body{
+            width: 100%;
+            height: 100%;
+            margin: 0;
+            padding: 6vh 6vw 6vh 6vw;
+            overflow: hidden;
+        }
+        img{
+            position: absolute;
+            right: 3%;
+        }
+        ::selection{
+            color: #ffffff;
+            background-color: #a44eed;
+        }
+    </style>
+</head>
+<body>
+    <img src="load.png" width="128px" height="128px" alt="Fengzi Music">
+    <h1>哎呀哎呀</h1>
+    <p>疯子音乐貌似停止了响应</p>
+    <p id="yi">请耐心等待一段时间</p>
+    <p>若还是无法修复就请关掉重启</p>
+    <br/>
+    <p>实在抱歉 {{{(>_<)}}}</p>
+    <script>
+        setTimeout(function(){
+            document.getElementById("yi").innerHTML = "请耐心等待亿段时间";
+        }, 10000);
+    </script>
+</body>
+</html>

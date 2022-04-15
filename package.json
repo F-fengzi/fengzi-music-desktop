@@ -1,0 +1,50 @@
+{
+  "name": "fengzi-music-desktop",
+  "productName": "疯子音乐",
+  "copyright": "Copyright 2021 Fengzi. All Rights Reserved. Based on open-source projects.",
+  "version": "0.2.1",
+  "description": "The official desktop client for Fengzi Music",
+  "main": "main.js",
+  "author": "Fengzi",
+  "homepage": "https://music.fengzi.ga/",
+  "dependencies": {
+    "discord-rich-presence": "^0.0.8"
+  },
+  "devDependencies": {
+    "electron": "^12.0.0",
+    "electron-builder": "^22.10.5"
+  },
+  "build": {
+    "appId": "com.fengzi.music",
+    "win": {
+      "target": "nsis",
+      "icon": "winicon.ico"
+    },
+    "nsis": {
+      "installerIcon": "winicon.ico",
+      "uninstallerIcon": "winicon.ico",
+      "uninstallDisplayName": "疯子音乐",
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true,
+      "shortcutName": "疯子音乐"
+    },
+    "mac": {
+      "category": "public.app-category.music",
+      "target": "dmg",
+      "icon": "macicon.png"
+    },
+    "dmg": {
+      "icon": "macicon.png",
+      "iconSize": 96,
+      "iconTextSize": 14
+    }
+  },
+  "scripts": {
+    "start": "electron .",
+    "dist": "electron-builder",
+    "dist:mac": "electron-builder --mac",
+    "dist:mwl": "electron-builder -mwl",
+    "dist:publish-mac": "electron-builder --mac --publish always",
+    "dist:publish-mwl": "electron-builder -mwl --publish always"
+  }
+}
