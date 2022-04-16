@@ -1,0 +1,23 @@
+name: build
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: macos-latest
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Setup Node.js environment
+        uses: actions/setup-node@v3.1.1
+        with:
+          cache: npm
+          
+      - name: Build & publish
+        run: npm run dist:publish-mwl
