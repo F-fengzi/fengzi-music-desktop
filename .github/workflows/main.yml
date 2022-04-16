@@ -10,14 +10,17 @@ on:
 jobs:
   build:
     runs-on: macos-latest
-
     steps:
-      - uses: actions/checkout@v3
+      - name: Checkout
+        uses: actions/checkout@v3
 
       - name: Setup Node.js environment
         uses: actions/setup-node@v3.1.1
         with:
           cache: npm
           
+      - name: Install dependencies
+        run: npm install
+        
       - name: Build & publish
         run: npm run dist:publish-mwl
