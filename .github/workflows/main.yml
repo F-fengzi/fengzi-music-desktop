@@ -23,4 +23,7 @@ jobs:
         run: npm install
         
       - name: Build & publish
-        run: npm run dist:publish-mwl
+        uses: samuelmeuli/action-electron-builder@v1
+        with:
+          github_token: ${{ secrets.github_token }}
+          release: ${{ startsWith(github.ref, 'refs/tags/v') }}
