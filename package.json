@@ -1,8 +1,8 @@
 {
   "name": "fengzi-music-desktop",
   "productName": "疯子音乐",
-  "copyright": "Copyright 2021 Fengzi. All Rights Reserved. Based on open-source projects.",
-  "version": "0.2.1",
+  "copyright": "Copyright 2022 Fengzi. All Rights Reserved. Based on open-source projects.",
+  "version": "0.3",
   "description": "The official desktop client for Fengzi Music",
   "main": "main.js",
   "author": "Fengzi",
@@ -11,8 +11,8 @@
     "discord-rich-presence": "^0.0.8"
   },
   "devDependencies": {
-    "electron": "^12.0.0",
-    "electron-builder": "^22.10.5"
+    "electron": "^18.0.4",
+    "electron-builder": "^23.0.3"
   },
   "build": {
     "appId": "com.fengzi.music",
@@ -41,10 +41,9 @@
   },
   "scripts": {
     "start": "electron .",
+    "test": "echo success",
     "dist": "electron-builder",
-    "dist:mac": "electron-builder --mac",
     "dist:mwl": "electron-builder -mwl",
-    "dist:publish-mac": "electron-builder --mac --publish always",
     "dist:publish-mwl": "electron-builder -mwl --publish always"
   }
 }
