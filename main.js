@@ -5,10 +5,10 @@ var app = electron.app;
 // Prevent garbage collection
 var mainWindow = null;
 var tray = null;
-var isQuiting = false;
+var isQuitting = false;
 
 // devMode
-var devMode = true;
+var devMode = false;
 if (devMode){console.time("time")}
 function devMsg(message, last){
     if(devMode){
@@ -23,24 +23,11 @@ function devMsg(message, last){
 function loadRPC(){
     let richPresence = require("discord-rich-presence")("826466733451640852");
     richPresence.updatePresence({
-        state: "music.fengzi.ga",
         startTimestamp: new Date(),
         largeImageKey: "logo",
         largeImageText: "Hi!"
     });
     devMsg("Discord Status Module Load Complete.");
-}
-// Lmao
-function isVIP(){
-    var fs = require("fs");
-    fs.readFile("VIP", "utf-8", (error, data) => {
-        if (data == "YESYES"){
-            return true;
-        }else if (error){
-            console.log(error.message);
-            return false;
-        }
-    });
 }
 
 // System tray options
@@ -62,11 +49,11 @@ var trayMenu = new electron.Menu.buildFromTemplate([
         app.exit();
     }},
     // {label: "听完退出", click: ()=>{
-    //     isQuiting = true;
+    //     isQuitting = true;
     //     app.quit();
     // }},
     {label: "退出", click: ()=>{
-        isQuiting = true;
+        isQuitting = true;
         app.quit();
     }}
 ]);
@@ -94,7 +81,7 @@ var appMenu = new electron.Menu.buildFromTemplate([
                 app.exit();
             }},
             {label: "退出", click: ()=>{
-                isQuiting = true;
+                isQuitting = true;
                 app.quit();
             }}
         ]
@@ -129,21 +116,6 @@ var appMenu = new electron.Menu.buildFromTemplate([
                 });
                 doc.loadURL("https://docs.music.fengzi.ga");
                 doc.setMenu(null);
-            }},
-            {label: "神奇按钮", click: ()=>{
-                if (!vip){
-                    fs.writeFile("VIP", "YESYES", (error) => {
-                        if (error){
-                            electron.dialog.showErrorBox("OOF! 您没能有幸成为尊贵的疯子音乐VIP！(。_。)", error.message);
-                        }else{
-                            vip = true;
-                            app.relaunch();
-                            app.exit();
-                        }
-                    });
-                }else{
-                    electron.dialog.showErrorBox("您已经是尊贵的VIP了！", "做人不能太贪");
-                }
             }},
             {label: "关于疯子音乐", click: ()=>{
                 var about = new electron.BrowserWindow({
@@ -193,15 +165,12 @@ app.on("ready", ()=>{
     // Show main window
     mainWindow.on("ready-to-show", ()=>{
         mainWindow.show();
-        if (isVIP()){
-            tray.setToolTip("尊享疯子音乐VIP，彰显不一样的你");
-        }
         devMsg("Main window up", true);
     });
 
     // Hide window and continue playing instead of closing
     mainWindow.on("close", (event)=>{
-        if(!isQuiting){
+        if(!isQuitting){
             event.preventDefault();
             mainWindow.hide();
         }
@@ -229,5 +198,5 @@ app.on("ready", ()=>{
 
 // Allow manually quit
 app.on("before-quit", ()=>{
-    isQuiting = true;
+    isQuitting = true;
 });
