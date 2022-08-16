@@ -25,7 +25,7 @@ function loadRPC(){
     richPresence.updatePresence({
         startTimestamp: new Date(),
         largeImageKey: "logo",
-        largeImageText: "Hi!"
+        largeImageText: "Hoi!"
     });
     devMsg("Discord Status Module Load Complete.");
 }
