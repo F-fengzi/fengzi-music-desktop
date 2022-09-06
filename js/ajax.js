@@ -7,7 +7,7 @@
  *************************************************/
 
 function contact(){
-    layer.msg('出错了？请查看官方文档 docs.music.fengzi.ga 哦(ﾉﾟ∀ﾟ)ﾉ', {anim:-1, icon:3});
+    layer.msg('出错了？请查看官方文档 docs.music.fengzi.dev 哦(ﾉﾟ∀ﾟ)ﾉ', {anim:-1, icon:3});
 }
 
 // ajax加载搜索结果

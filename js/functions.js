@@ -165,7 +165,7 @@ $(function(){
             title: '请输入您的网易云ID ♪(^∇^*)：',
             // value: '',  // 默认值
             btn: ['确定', '这啥？'],
-            btn2: function(){window.open("https://docs.music.fengzi.ga/faq#q-ru-he-tong-bu-wo-de-wang-yi-yun-zhang-hao")}
+            btn2: function(){window.open("https://docs.music.fengzi.dev/faq#how-to-sync-netease-account")}
         },
         function(val, index){   // 输入后的回调函数
             if(isNaN(val)) {

@@ -7,7 +7,7 @@
  *************************************************/
 // 播放器功能配置
 var mkPlayer = {
-    api: "https\://fengzi-music-vercel.vercel.app/api/api.php", // api地址
+    api: "https\://music.fengzi.dev/api/api.php", // api地址
     loadcount: 20,  // 搜索结果一次加载多少条
     method: "GET",     // 数据传输方式(POST/GET)
     defaultlist: 3,    // 默认要显示的播放列表编号

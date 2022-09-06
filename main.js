@@ -24,7 +24,7 @@ function loadRPC(){
     let richPresence = require("discord-rich-presence")("826466733451640852");
     richPresence.updatePresence({
         startTimestamp: new Date(),
-        largeImageKey: "logo",
+        largeImageKey: "macicon",
         largeImageText: "Hoi!"
     });
     devMsg("Discord Status Module Load Complete.");
@@ -114,7 +114,7 @@ var appMenu = new electron.Menu.buildFromTemplate([
                     height: 720,
                     icon: path.join(__dirname, "winicon.ico")
                 });
-                doc.loadURL("https://docs.music.fengzi.ga");
+                doc.loadURL("https://docs.music.fengzi.dev");
                 doc.setMenu(null);
             }},
             {label: "关于疯子音乐", click: ()=>{
