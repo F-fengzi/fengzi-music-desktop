@@ -165,7 +165,7 @@ $(function(){
             title: '请输入您的网易云ID ♪(^∇^*)：',
             // value: '',  // 默认值
             btn: ['确定', '这啥？'],
-            btn2: function(){window.open("https://docs.music.fengzi.dev/faq#how-to-sync-netease-account")}
+            btn2: function(){window.open("https://docs.music.fengzi.dev/faq#how-to-sync-with-netease-account")}
         },
         function(val, index){   // 输入后的回调函数
             if(isNaN(val)) {
@@ -241,20 +241,20 @@ $(function(){
     if((mkPlayer.coverbg === true && !rem.isMobile) || (mkPlayer.mcoverbg === true && rem.isMobile)) { // 开启了封面背景
     
         if(rem.isMobile) {  // 移动端采用另一种模糊方案
-            $('#blur-img').html('<div class="blured-img" id="mobile-blur"></div><div class="blur-mask mobile-mask"></div>');
+            $('#blur-img').html('<div class="blurred-img" id="mobile-blur"></div><div class="blur-mask mobile-mask"></div>');
         } else {
             // 背景图片初始化
             $('#blur-img').backgroundBlur({
                 // imageURL : '', // URL to the image that will be used for blurring
                 blurAmount : 50, // 模糊度
-                imageClass : 'blured-img', // 背景区应用样式
+                imageClass : 'blurred-img', // 背景区应用样式
                 overlayClass : 'blur-mask', // 覆盖背景区class，可用于遮罩或额外的效果
                 // duration: 0, // 图片淡出时间
                 endOpacity : 1 // 图像最终的不透明度
             });
         }
         
-        $('.blur-mask').fadeIn(750);   // 遮罩层淡出
+        $('.blur-mask').fadeIn(500);   // 遮罩层淡出
     }
     
     // 图片加载失败处理
@@ -465,7 +465,7 @@ function changeCover(music) {
             $("#music-cover").load(function(){
                 if(animate) {   // 渐变动画也已完成
                     $("#blur-img").backgroundBlur(img);    // 替换图像并淡出
-                    $("#blur-img").animate({opacity:"1"}, 1500); // 背景更换特效
+                    $("#blur-img").animate({opacity:"1"}, 1000); // 背景更换特效
                 } else {
                     imgload = true;     // 告诉下面的函数，图片已准备好
                 }
@@ -476,7 +476,7 @@ function changeCover(music) {
             $("#blur-img").animate({opacity: "0"}, 1000, function(){
                 if(imgload) {   // 如果图片已经加载好了
                     $("#blur-img").backgroundBlur(img);    // 替换图像并淡出
-                    $("#blur-img").animate({opacity:"1"}, 1500); // 背景更换特效
+                    $("#blur-img").animate({opacity:"1"}, 1000); // 背景更换特效
                 } else {
                     animate = true;     // 等待图像加载完
                 }

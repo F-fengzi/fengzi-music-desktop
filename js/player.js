@@ -342,9 +342,9 @@ function play(music) {
 }
 
 
-// 我的要求并不高，保留这一句版权信息可好？（ok）
-// 保留了，你不会损失什么；而保留版权，是对作者最大的尊重。（ok）
-console.info('欢迎使用疯子音乐！\n\n歌曲来源：\n网易云音乐https://music.163.com \nQQ音乐https://y.qq.com \n酷狗音乐https://kugou.com \n虾米音乐https://xiami.com \n千千音乐https://music.taihe.com \n\n源码：MKOnlineMusicPlayer \n当前版本：'+mkPlayer.version+' \n作者：Mengkun(https://mkblog.cn) \n源码：https://github.com/mengkunsoft/MKOnlineMusicPlayer \n\n内核：Meting \n当前版本：v1.5.7 \n作者：Metowolf(https://i-meto.com) \n源码：https://github.com/metowolf/Meting \n\n\n\nWelcome to Fengzi Music! \n\nMusic Sources: \nNetease Cloud Music https://music.163.com \nQQ Music https://y.qq.com \nKugou Music https://kugou.com \nXiami Music https://xiami.com \nQian Qian Music https://music.taihe.com \n\nPowered by MKOnlineMusicPlayer \nCurrent Version: '+mkPlayer.version+' \nAuthor: Mengkun(https://mkblog.cn) \nSource Code: https://github.com/mengkunsoft/MKOnlineMusicPlayer \n\nBased on Meting \nCurrent Version: v1.5.7 \nAuthor: Metowolf(https://i-meto.com) \nSource Code: https://github.com/metowolf/Meting');
+// 我的要求并不高，保留这一句版权信息可好？(ok)
+// 保留了，你不会损失什么；而保留版权，是对作者最大的尊重。
+console.info('欢迎使用疯子音乐！\n\n歌曲来源：\n网易云音乐https://music.163.com \nQQ音乐https://y.qq.com \n酷狗音乐https://kugou.com \n虾米音乐https://xiami.com \n千千音乐https://music.taihe.com \n\n源码：MKOnlineMusicPlayer \n当前版本：'+mkPlayer.version+' \n作者：Mengkun(https://mkblog.cn) \n原项目：https://github.com/mengkunsoft/MKOnlineMusicPlayer \n\nAPI 内核：Meting \n当前版本：v1.5.11 \n作者：Metowolf(https://i-meto.com) \n源码：https://github.com/metowolf/Meting \n\n\n\nWelcome to Fengzi Music! \n\nMusic Sources: \nNetEase Cloud Music https://music.163.com \nQQ Music https://y.qq.com \nKugou Music https://kugou.com \nXiami Music https://xiami.com \nQian Qian Music https://music.taihe.com \n\nForked from MKOnlineMusicPlayer \nVersion: '+mkPlayer.version+' \nCreator: Mengkun(https://mkblog.cn) \nRepository: https://github.com/mengkunsoft/MKOnlineMusicPlayer \n\nBased on Meting API \nVersion: v1.5.11 \nCreator: Metowolf(https://i-meto.com) \nRepository: https://github.com/metowolf/Meting');
 
 // 音乐进度条拖动回调函数
 function mBcallback(newVal) {

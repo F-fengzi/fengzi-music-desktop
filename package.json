@@ -2,7 +2,7 @@
   "name": "fengzi-music-desktop",
   "productName": "疯子音乐",
   "copyright": "Copyright 2022 Fengzi. All Rights Reserved. Based on open-source projects.",
-  "version": "0.3.3",
+  "version": "0.3.4",
   "description": "The official desktop client for Fengzi Music",
   "main": "main.js",
   "author": "Fengzi",
@@ -11,8 +11,8 @@
     "discord-rich-presence": "^0.0.8"
   },
   "devDependencies": {
-    "electron": "^20.1.1",
-    "electron-builder": "^23.3.3"
+    "electron": "^22.3.0",
+    "electron-builder": "^23.6.0"
   },
   "build": {
     "appId": "com.fengzi.music",

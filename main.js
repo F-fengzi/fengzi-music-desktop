@@ -7,8 +7,10 @@ var mainWindow = null;
 var tray = null;
 var isQuitting = false;
 
+const APP_VERSION = "0.3.4 Beta";
+
 // devMode
-var devMode = false;
+var devMode = true;
 if (devMode){console.time("time")}
 function devMsg(message, last){
     if(devMode){
@@ -25,7 +27,7 @@ function loadRPC(){
     richPresence.updatePresence({
         startTimestamp: new Date(),
         largeImageKey: "macicon",
-        largeImageText: "Hoi!"
+        largeImageText: "v" + APP_VERSION
     });
     devMsg("Discord Status Module Load Complete.");
 }
@@ -139,10 +141,19 @@ app.on("ready", ()=>{
         width: 1280,
         height: 720,
         show: false,
-        icon: path.join(__dirname, "winicon.ico")
+        icon: path.join(__dirname, "winicon.ico"),
+        webPreferences: {
+            nodeIntegration: true,
+            enableRemoteModule: true,
+            contextIsolation: false,
+        }
     });
     mainWindow.loadFile(path.join(__dirname, "index.html"));
     devMsg("Content loaded");
+
+    if (devMode){
+        mainWindow.webContents.openDevTools();
+    }
 
     // Load system tray
     tray = new electron.Tray(path.join(__dirname, "icon.ico"));

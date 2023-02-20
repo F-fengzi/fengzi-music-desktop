@@ -4,7 +4,7 @@
  * 播放器样式表文件
  * 编写：mengkun(https://mkblog.cn)
  * 时间：2018-3-13
- * 疯子音乐已修改，2020/03/03
+ * 疯子音乐已修改，2023/02/19
  *************************************************/
 
 blockquote, body, button, dd, dl, dt, fieldset, form, h1, h2, h3, h4, h5, h6, hr, html, input, lengend, li, ol, p, pre, td, textarea, th, ul {
@@ -92,6 +92,12 @@ body {
     width: 100%;
     background-size: cover;
     background-position: bottom center;
+}
+/* 模糊背景大小修复 by 疯子音乐 */
+.blurred-img{
+    min-width: calc(100vh * 0.6);
+    width: 100%;
+    height: 100%;
 }
 /* 图像遮罩层 */
 .blur-mask {
