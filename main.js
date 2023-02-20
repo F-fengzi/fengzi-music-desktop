@@ -10,7 +10,7 @@ var isQuitting = false;
 const APP_VERSION = "0.3.4 Beta";
 
 // devMode
-var devMode = true;
+var devMode = false;
 if (devMode){console.time("time")}
 function devMsg(message, last){
     if(devMode){
@@ -141,12 +141,7 @@ app.on("ready", ()=>{
         width: 1280,
         height: 720,
         show: false,
-        icon: path.join(__dirname, "winicon.ico"),
-        webPreferences: {
-            nodeIntegration: true,
-            enableRemoteModule: true,
-            contextIsolation: false,
-        }
+        icon: path.join(__dirname, "winicon.ico")
     });
     mainWindow.loadFile(path.join(__dirname, "index.html"));
     devMsg("Content loaded");
