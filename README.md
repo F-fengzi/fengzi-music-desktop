@@ -1,2 +1,2 @@
 # fengzi-music-desktop
- The official desktop client of Fengzi Music
+The official desktop client of Fengzi Music

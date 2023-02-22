@@ -3,7 +3,7 @@
  * Ajax 后台数据交互请求模块
  * 编写：mengkun(https://mkblog.cn)
  * 时间：2018-3-11
- * 疯子音乐已修改，2021/03/02
+ * 疯子音乐已修改，2023/02/21
  *************************************************/
 
 function contact(){
@@ -198,12 +198,35 @@ function ajaxPic(music, callback)
             return true;
         },   //success
         error: function(XMLHttpRequest, textStatus, errorThrown) {
-            layer.msg('回来路上吧封面丢了 o(TωT)o - ' + XMLHttpRequest.status, {icon:2});
+            layer.msg('回来路上把封面丢了 o(TωT)o - ' + XMLHttpRequest.status, {icon:2});
             console.error(XMLHttpRequest + textStatus + errorThrown);
             setTimeout(function(){contact();},1000);
         }   // error 
     }); //ajax
     
+}
+
+// 仅用于返回歌曲封面的方法 - by 疯子音乐
+function ajaxPicClean(music){
+    if(music.pic !== null && music.pic !== "err" && music.pic !== "") {
+        return music.pic;
+    }
+    if(music.pic_id === null) {
+        return null;
+    }
+    $.ajax({ 
+        type: mkPlayer.method, 
+        url: mkPlayer.api,
+        data: "types=pic&id=" + music.pic_id + "&source=" + music.source,
+        dataType : "jsonp",
+        success: function(jsonData){
+            if(jsonData.url !== "") {
+                return jsonData.url;
+            } else {
+                return null;
+            }
+        },
+    });
 }
 
 // ajax加载用户歌单
@@ -255,7 +278,7 @@ function ajaxPlayList(lid, id, callback) {
                         url_id: jsonData.playlist.tracks[i].id,  // 链接ID
                         pic_id: null,  // 封面ID
                         lyric_id: jsonData.playlist.tracks[i].id,  // 歌词ID
-                        pic: jsonData.playlist.tracks[i].al.picUrl + "?param=300y300",    // 专辑图片
+                        pic: jsonData.playlist.tracks[i].al.picUrl + "?param=384y384",    // 专辑图片
                         url: null   // mp3链接
                     };
                 }

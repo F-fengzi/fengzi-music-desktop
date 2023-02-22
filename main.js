@@ -1,208 +1,348 @@
-// Load basics
-var electron = require("electron");
-var path = require("path");
-var app = electron.app;
-// Prevent garbage collection
-var mainWindow = null;
-var tray = null;
-var isQuitting = false;
+// Constants
+const DEV_MODE = false;
+const APP_VERSION = "0.4.0 Beta";
 
-const APP_VERSION = "0.3.4 Beta";
-
-// devMode
-var devMode = false;
-if (devMode){console.time("time")}
-function devMsg(message, last){
-    if(devMode){
+// Development Timers
+function devMsg(message, time){
+    if(DEV_MODE){
         console.log(message);
-        console.timeEnd("time");
-        if (!last){
-            console.time("time");
-        } 
+        switch(time){
+            case "start":
+                console.time("subtime");
+                console.time("total")
+                break;
+            case "time":
+                console.timeEnd("subtime");
+                console.time("subtime");
+                break;
+            case "end":
+                console.timeEnd("subtime");
+                console.timeEnd("total");
+                break;
+        }
     }
 }
-// Discord RPC module
+
+devMsg("", "start");
+
+// Load dependencies
+const electron = require("electron");
+const path = require("path");
+const app = electron.app;
+
+// Limit one instance of app
+if (!app.requestSingleInstanceLock()) app.quit();
+
+// Load basics
+let mainWindow = null;
+let tray = null;
+let appMenu = null;
+let trayMenu = null;
+let contextMenu = null;
+let isQuitting = false;
+let quitAfter = false;
+let isPlaying = false;
+function reloadMenus(){
+    // Define app menu (mainly for macOS)
+    appMenu = new electron.Menu.buildFromTemplate([
+        {
+            label: "应用",
+            submenu: [
+                { type: "checkbox", checked: mainWindow.isFullScreen(), label: "全屏模式", click: () => {
+                    if (mainWindow.isFullScreen()){
+                        mainWindow.setFullScreen(false);
+                    }else{
+                        mainWindow.setFullScreen(true);
+                        mainWindow.webContents.executeJavaScript("layer.msg('按 Esc 即可退出全屏喔 ╰(*°▽°*)╯', { icon: 1 })");
+                    }
+                    reloadMenus();
+                } },
+                { type: "checkbox", checked: mainWindow.isAlwaysOnTop(), label: "窗口置顶", click: () => {
+                    if (mainWindow.isAlwaysOnTop()){
+                        mainWindow.setAlwaysOnTop(false);
+                    }else{
+                        mainWindow.setAlwaysOnTop(true, "status");
+                    }
+                    reloadMenus();
+                } },
+                { type: "separator" },
+                { label: "重新加载", click: () => {
+                    app.relaunch();
+                    app.exit();
+                } },
+                { type: "checkbox", checked: quitAfter, label: "听完退出", click: () => {
+                    mainWindow.webContents.executeJavaScript("toggleQuitAfter()");
+                } },
+                { label: "退出", click: () => {
+                    isQuitting = true;
+                    app.quit();
+                } },
+            ]
+        },
+        {
+            label: "控制",
+            submenu: [
+                { label: isPlaying ? "暂停" : "播放", click: () => {
+                    mainWindow.webContents.executeJavaScript("pause()");
+                } },
+                { label: "上一首", click: () => {
+                    mainWindow.webContents.executeJavaScript("prevMusic()");
+                } },
+                { label: "下一首", click: () => {
+                    mainWindow.webContents.executeJavaScript("nextMusic()");
+                } },
+                { label: "查看歌曲详情", click: () => {
+                    mainWindow.webContents.executeJavaScript("musicInfoFull(rem.playlist, rem.playid)");
+                } },
+                // { label: "下载歌曲封面（啥" },
+            ] 
+        },
+        {
+            label: "关于",
+            submenu: [
+                { label: "查看文档", click: () => {
+                    var doc = new electron.BrowserWindow({
+                        width: 1280,
+                        height: 720,
+                        icon: path.join(__dirname, "winicon.ico"),
+                    });
+                    doc.loadURL("https://docs.music.fengzi.dev/");
+                    doc.setMenu(null);
+                } },
+                { label: "关于疯子音乐", click: () => {
+                    var about = new electron.BrowserWindow({
+                        width: 720,
+                        height: 480,
+                        icon: path.join(__dirname, "winicon.ico"),
+                    });
+                    about.loadFile(path.join(__dirname, "about.html"));
+                    about.setMenu(null);
+                } },
+            ]
+        },
+    ]);
+    // Define system tray menu
+    trayMenu = new electron.Menu.buildFromTemplate([
+        { label: "打开疯子音乐", click: () => {
+            mainWindow.show();
+        } },
+        { type: "separator" },
+        { label: isPlaying ? "暂停" : "播放", click: () => {
+            mainWindow.webContents.executeJavaScript("pause()");
+        } },
+        { label: "上一首", click: () => {
+            mainWindow.webContents.executeJavaScript("prevMusic()");
+        } },
+        { label: "下一首", click: () => {
+            mainWindow.webContents.executeJavaScript("nextMusic()");
+        } },
+        { type: "separator" },
+        { label: "重新加载", click: () => {
+            app.relaunch();
+            app.exit();
+        } },
+        { type: "checkbox", checked: quitAfter, label: "听完退出", click: () => {
+            mainWindow.webContents.executeJavaScript("toggleQuitAfter()");
+        } },
+        { label: "退出", click: () => {
+            isQuitting = true;
+            app.quit();
+        } },
+        
+    ]);
+    // Define context menu
+    contextMenu = new electron.Menu.buildFromTemplate([
+        { label: isPlaying ? "暂停" : "播放", click: () => {
+            mainWindow.webContents.executeJavaScript("pause()");
+        } },
+        { label: "上一首", click: () => {
+            mainWindow.webContents.executeJavaScript("prevMusic()");
+        } },
+        { label: "下一首", click: () => {
+            mainWindow.webContents.executeJavaScript("nextMusic()");
+        } },
+        { label: "查看歌曲信息", click: () => {
+            mainWindow.webContents.executeJavaScript("musicInfoFull(rem.playlist, rem.playid)");
+        } },
+        // { label: "下载歌曲封面（啥" },
+        { type: "separator" },
+        { type: "checkbox", checked: mainWindow.isFullScreen(), label: "全屏模式", click: () => {
+            if (mainWindow.isFullScreen()){
+                mainWindow.setFullScreen(false);
+            }else{
+                mainWindow.setFullScreen(true);
+                mainWindow.webContents.executeJavaScript("layer.msg('按 Esc 即可退出全屏喔 ╰(*°▽°*)╯', { icon: 1 })");
+            }
+            reloadMenus();
+        } },
+        { type: "checkbox", checked: mainWindow.isAlwaysOnTop(), label: "窗口置顶", click: () => {
+            if (mainWindow.isAlwaysOnTop()){
+                mainWindow.setAlwaysOnTop(false);
+            }else{
+                mainWindow.setAlwaysOnTop(true, "status");
+            }
+            reloadMenus();
+        } },
+        { type: "checkbox", checked: quitAfter, label: "听完退出", click: () => {
+            mainWindow.webContents.executeJavaScript("toggleQuitAfter()");
+        } },
+        { type: "separator" },
+        { label: "查看文档", click: () => {
+            var doc = new electron.BrowserWindow({
+                width: 1280,
+                height: 720,
+                icon: path.join(__dirname, "winicon.ico"),
+            });
+            doc.loadURL("https://docs.music.fengzi.dev/");
+            doc.setMenu(null);
+        } },
+        { label: "关于疯子音乐", click: () => {
+            var about = new electron.BrowserWindow({
+                width: 720,
+                height: 480,
+                icon: path.join(__dirname, "winicon.ico"),
+            });
+            about.loadFile(path.join(__dirname, "about.html"));
+            about.setMenu(null);
+        } },
+    ]);
+
+    electron.Menu.setApplicationMenu(appMenu);
+    tray.setContextMenu(trayMenu);
+}
 function loadRPC(){
     let richPresence = require("discord-rich-presence")("826466733451640852");
     richPresence.updatePresence({
         startTimestamp: new Date(),
         largeImageKey: "macicon",
-        largeImageText: "v" + APP_VERSION
+        largeImageText: "v" + APP_VERSION,
     });
-    devMsg("Discord Status Module Load Complete.");
+    devMsg("Discord status module loaded", "time");
 }
+devMsg("Initialized", "time");
 
-// System tray options
-var trayMenu = new electron.Menu.buildFromTemplate([
-    {label: "打开疯子音乐", click: ()=>{mainWindow.show()}},
-    {type: "separator"},
-    {label: "播放 / 暂停", click: ()=>{
-        mainWindow.webContents.executeJavaScript("pause()");
-    }},
-    {label: "上一首", click: ()=>{
-        mainWindow.webContents.executeJavaScript("prevMusic()");
-    }},
-    {label: "下一首", click: ()=>{
-        mainWindow.webContents.executeJavaScript("nextMusic()");
-    }},
-    {type: "separator"},
-    {label: "重新加载", click: ()=>{
-        app.relaunch();
-        app.exit();
-    }},
-    // {label: "听完退出", click: ()=>{
-    //     isQuitting = true;
-    //     app.quit();
-    // }},
-    {label: "退出", click: ()=>{
-        isQuitting = true;
-        app.quit();
-    }}
-]);
-// App menu options
-var appMenu = new electron.Menu.buildFromTemplate([
-    {
-        label: "应用",
-        submenu: [
-            {label: "切换全屏", click: ()=>{
-                if (mainWindow.isFullScreen()){
-                    mainWindow.setFullScreen(false);
-                }else{
-                    mainWindow.setFullScreen(true);
-                }
-            }},
-            {label: "切换窗口置顶", click: ()=>{
-                if (mainWindow.isAlwaysOnTop()){
-                    mainWindow.setAlwaysOnTop(false);
-                }else{
-                    mainWindow.setAlwaysOnTop(true, "status");
-                }
-            }},
-            {label: "重新加载", click: ()=>{
-                app.relaunch();
-                app.exit();
-            }},
-            {label: "退出", click: ()=>{
-                isQuitting = true;
-                app.quit();
-            }}
-        ]
-    },
-    {
-        label: "控制",
-        submenu: [
-            {label: "播放 / 暂停", click: ()=>{
-                mainWindow.webContents.executeJavaScript("pause()");
-            }},
-            {label: "上一首", click: ()=>{
-                mainWindow.webContents.executeJavaScript("prevMusic()");
-            }},
-            {label: "下一首", click: ()=>{
-                mainWindow.webContents.executeJavaScript("nextMusic()");
-            }},
-            // {label: "静音 / 取消静音", click: ()=>{
-            //     // not original mk function name, just added by fengzi music.
-            // }},
-            // {label: "查看歌曲详情", click: ()=>{}},
-            // {label: "下载歌曲封面（啥"}
-        ] 
-    },
-    {
-        label: "关于",
-        submenu: [
-            {label: "打开文档", click: ()=>{
-                var doc = new electron.BrowserWindow({
-                    width: 1280,
-                    height: 720,
-                    icon: path.join(__dirname, "winicon.ico")
-                });
-                doc.loadURL("https://docs.music.fengzi.dev");
-                doc.setMenu(null);
-            }},
-            {label: "关于疯子音乐", click: ()=>{
-                var about = new electron.BrowserWindow({
-                    width: 720,
-                    height: 480,
-                    icon: path.join(__dirname, "winicon.ico")
-                });
-                about.loadFile(path.join(__dirname, "about.html"));
-                about.setMenu(null);
-            }}
-        ]
-    }
-]);
+/* ------------------------------ */
 
-devMsg("Initialized");
+// On app ready
+app.on("ready", () => {
+    devMsg("App ready", "time");
 
-app.on("ready", ()=>{
-    devMsg("App ready");
     // Load main window
     mainWindow = new electron.BrowserWindow({
         width: 1280,
         height: 720,
         show: false,
-        icon: path.join(__dirname, "winicon.ico")
+        icon: path.join(__dirname, "winicon.ico"),
+        autoHideMenuBar: true,
+        webPreferences: {
+            preload: path.join(__dirname, "preload.js"),
+        },
     });
     mainWindow.loadFile(path.join(__dirname, "index.html"));
-    devMsg("Content loaded");
-
-    if (devMode){
+    devMsg("Main content loaded", "time");
+    if (DEV_MODE){
         mainWindow.webContents.openDevTools();
     }
 
     // Load system tray
     tray = new electron.Tray(path.join(__dirname, "icon.ico"));
     tray.setToolTip("疯子音乐 - 畅听无止境");
-    tray.setContextMenu(trayMenu);
     tray.setIgnoreDoubleClickEvents(true);
-    tray.on("click", ()=>{
+    tray.on("click", () => {
         if(mainWindow.isVisible()){
             mainWindow.hide();
         }else{
             mainWindow.show();
         }
     });
-    devMsg("System tray loaded");
+    devMsg("System tray loaded", "time");
 
-    // Load app menu
-    electron.Menu.setApplicationMenu(appMenu);
-    devMsg("App menu loaded");
+    // Load app menu, system tray menu, and context menu
+    reloadMenus();
+    devMsg("Menus loaded", "time");
 
+    // Main window events
     // Show main window
-    mainWindow.on("ready-to-show", ()=>{
+    mainWindow.on("ready-to-show", () => {
         mainWindow.show();
-        devMsg("Main window up", true);
+        devMsg("Main window up", "end");
     });
-
     // Hide window and continue playing instead of closing
-    mainWindow.on("close", (event)=>{
+    mainWindow.on("close", (event) => {
         if(!isQuitting){
             event.preventDefault();
             mainWindow.hide();
         }
     });
-
     // On unresponsive
-    mainWindow.on("unresponsive", ()=>{
+    mainWindow.on("unresponsive", () => {
         devMsg("Unresponsive");
         var oof = new electron.BrowserWindow({
             width: 640,
             height: 480,
-            icon: path.join(__dirname, "winicon.ico")
+            icon: path.join(__dirname, "winicon.ico"),
         });
         oof.loadFile(path.join(__dirname, "oof.html"));
         oof.setMenu(null);
     });
-    mainWindow.on("responsive", ()=>{
+    mainWindow.on("responsive", () => {
         devMsg("Responsive again");
         oof.close();
+        oof = null;
     });
 
-    // Attempt to load Discord RPC
+    // Load Discord RPC
     loadRPC();
 });
-
+// Show original window if user tries to open a second instance to avoid confusions and problems
+app.on("second-instance", () => {
+    if (mainWindow) {
+        if (!mainWindow.isVisible()) mainWindow.show();
+        if (mainWindow.isMinimized()) mainWindow.restore();
+        mainWindow.focus();
+    }
+});
 // Allow manually quit
-app.on("before-quit", ()=>{
+app.on("before-quit", () => {
     isQuitting = true;
+});
+
+/* ------------------------------ */
+
+// IPCs
+electron.ipcMain.on("exitMaximized", () => {
+    if (mainWindow.isFullScreen()){
+        mainWindow.setFullScreen(false);
+        reloadMenus();
+    }
+});
+electron.ipcMain.on("toggleMaximized", () => {
+    if (mainWindow.isFullScreen()){
+        mainWindow.setFullScreen(false);
+    }else{
+        mainWindow.setFullScreen(true);
+    }
+    reloadMenus();
+});
+electron.ipcMain.on("contextMenu", () => {
+    contextMenu.popup({window: mainWindow});
+});
+electron.ipcMain.on("appQuit", () => {
+    app.quit();
+});
+electron.ipcMain.on("quitAfterEnabled", () => {
+    quitAfter = true;
+    reloadMenus();
+});
+electron.ipcMain.on("quitAfterDisabled", () => {
+    quitAfter = false;
+    reloadMenus();
+});
+electron.ipcMain.on("isPlaying", () => {
+    isPlaying = true;
+    reloadMenus();
+});
+electron.ipcMain.on("isPaused", () => {
+    isPlaying = false;
+    reloadMenus();
 });

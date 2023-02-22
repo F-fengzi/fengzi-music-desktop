@@ -1,15 +1,25 @@
-const electron = require("electron");
+// 决定是否听完退出的变量
+var quitAfter = false;
+
+function toggleQuitAfter(){
+    quitAfter = !quitAfter;
+    quitAfter ? window.bridge.quitAfterEnabled() : window.bridge.quitAfterDisabled();
+}
+
+// 侦测键盘按键
+document.addEventListener("keydown", event => {
+    switch (event.key){
+        case "Escape":
+            window.bridge.exitMaximized();
+            break;
+        case "F11":
+            window.bridge.toggleMaximized();
+            break;
+    }
+});
 
 // 桌面端右键菜单的实现
-var rightMenu = new electron.remote.Menu.buildFromTemplate([
-    {label: "播放 / 暂停"},
-    {label: "上一首"},
-    {label: "下一首"},
-    {label: "静音 / 取消静音"},
-    {label: "查看歌曲信息"}
-]);
-
-window.addEventListener("contextmenu", function(e){
-    e.preventDefault();
-    rightMenu.popup({window: electron.remote.getCurrentWindow()});
+document.addEventListener("contextmenu", event => {
+    event.preventDefault();
+    window.bridge.contextMenu();
 });

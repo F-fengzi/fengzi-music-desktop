@@ -3,7 +3,7 @@
  * 播放器主功能模块
  * 编写：mengkun(https://mkblog.cn)
  * 时间：2018-3-13
- * 疯子音乐已修改，2021/03/02
+ * 疯子音乐已修改，2023/02/21
  *************************************************/
 // 播放器功能配置
 var mkPlayer = {
@@ -21,7 +21,13 @@ var mkPlayer = {
     debug: false   // 是否开启调试模式(true/false)
 };
 
-
+// 系统 MediaSession 集成 - by 疯子音乐
+if ("mediaSession" in navigator) {
+    navigator.mediaSession.setActionHandler("play", () => { pause(); });
+    navigator.mediaSession.setActionHandler("pause", () => { pause(); });
+    navigator.mediaSession.setActionHandler("previoustrack", () => { prevMusic(); });
+    navigator.mediaSession.setActionHandler("nexttrack", () => { nextMusic(); });
+}
 
 /*******************************************************
  * 以下内容是播放器核心文件，不建议进行修改，否则可能导致播放器无法正常使用!
@@ -98,6 +104,9 @@ function orderChange() {
 // 播放
 function audioPlay() {
     rem.paused = false;     // 更新状态（未暂停）
+
+    window.bridge.isPlaying(); // 通知主程序正在播放 by Fengzi Music Desktop
+
     refreshList();      // 刷新状态，显示播放的波浪
     $(".btn-play").addClass("btn-state-paused");        // 恢复暂停
     
@@ -130,6 +139,9 @@ function titleFlash(msg) {
 // 暂停
 function audioPause() {
     rem.paused = true;      // 更新状态（已暂停）
+
+    window.bridge.isPaused(); // 通知主程序已暂停 by Fengzi Music Desktop
+
     
     $(".list-playing").removeClass("list-playing");        // 移除其它的正在播放
     
@@ -169,6 +181,10 @@ function nextMusic() {
 }
 // 自动播放时的下一首歌
 function autoNextMusic() {
+    // 听完退出 by Fengzi Music Desktop
+    if (quitAfter){
+        window.bridge.appQuit();
+    }
     if(rem.order && rem.order === 1) {
         playList(rem.playid);
     } else {
@@ -305,7 +321,20 @@ function play(music) {
         'pic: "' + music.pic + '",\n' +
         'url: "' + music.url + '"');
     }
-    
+
+    // 更新 MediaMetadata 元数据 - by 疯子音乐
+    if ("mediaSession" in navigator) {
+        const cover = ajaxPicClean(music);
+        navigator.mediaSession.metadata = new MediaMetadata({
+            title: music.name,
+            artist: music.artist,
+            album: music.album,
+            artwork: cover ? [
+                { src: cover, sizes: "384x384", type: 'image/png' },
+            ] : [],
+        });
+    }
+
     // 遇到错误播放下一首歌
     if(music.url == "err") {
         audioErr(); // 调用错误处理函数

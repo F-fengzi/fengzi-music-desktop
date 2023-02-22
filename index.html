@@ -12,8 +12,11 @@
     <link rel="bookmark" href="icon.ico">
     <link rel="apple-touch-icon" sizes="144x144" href="apple.png">
     
+    <!-- jQuery & nodeIntegration 兼容性修复 by Dale, https://stackoverflow.com/a/37480521 -->
+    <script>if (typeof module === 'object') window.module = module; module = undefined;</script>
     <!-- jQuery文件 -->
     <script src="js/jquery.min.js"></script>
+    <script>if (window.module) module = window.module;</script>
     
     <!-- 播放器样式表文件 -->
     <link rel="stylesheet" type="text/css" href="css/player.css">
@@ -128,8 +131,7 @@
 <script src="js/background-blur.min.js"></script>
 
 <!-- 电脑版与主进程沟通模块 -  by 疯子音乐 -->
-<!-- 由于 nodeIntergration 和 jQuery 互不兼容，为了网站功能完整性，此模块已暂时禁用-->
-<!--<script src="js/desktop.js"></script>-->
+<script src="js/desktop.js"></script>
 
 </body>
 </html>

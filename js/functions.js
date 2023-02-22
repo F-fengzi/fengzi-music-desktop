@@ -304,6 +304,15 @@ function musicInfo(list, index) {
     }
 }
 
+// 供外部调用的显示当前歌曲信息的方法 by Fengzi Music Desktop
+function musicInfoFull(){
+    if(rem.playid === undefined) {
+        layer.msg('啥歌也没放你说能有什么信息（︶^︶）',{icon: 2});
+        return false;
+    }
+    musicInfo(rem.playlist, rem.playid);
+}
+
 // 展现搜索弹窗
 function searchBox() {
     var tmpHtml = '<form onSubmit="return searchSubmit()"><div id="search-area">' + 
