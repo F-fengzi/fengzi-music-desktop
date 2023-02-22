@@ -17,12 +17,12 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v3.3.0
+        uses: actions/checkout@v3
 
-      - name: Setup Node.js 18 environment
-        uses: actions/setup-node@v3.6.0
+      - name: Setup Node.js 14 environment
+        uses: actions/setup-node@v3
         with:
-          node-version: '18'
+          node-version: '14'
 
       - name: Build & publish
         uses: samuelmeuli/action-electron-builder@v1.6.0
