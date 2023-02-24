@@ -305,7 +305,7 @@ app.on("second-instance", () => {
 app.on("before-quit", () => {
     isQuitting = true;
 });
-// Disable unexpexted window creations
+// Disable unexpected window creations
 app.on('web-contents-created', (event, contents) => {
     contents.setWindowOpenHandler(() => {
         return { action: 'deny' };
