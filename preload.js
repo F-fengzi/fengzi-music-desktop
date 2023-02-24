@@ -9,4 +9,5 @@ contextBridge.exposeInMainWorld("bridge", {
     quitAfterDisabled: () => ipcRenderer.send("quitAfterDisabled"),
     isPlaying: () => ipcRenderer.send("isPlaying"),
     isPaused: () => ipcRenderer.send("isPaused"),
+    openDoc: () => ipcRenderer.send("openDoc"),
 });

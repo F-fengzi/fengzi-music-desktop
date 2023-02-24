@@ -1,11 +1,11 @@
 // Constants
 const DEV_MODE = false;
-const APP_VERSION = "0.4.0 Beta";
+const APP_VERSION = "0.4.1 Beta";
 
 // Development Timers
 function devMsg(message, time){
+    console.log(message);
     if(DEV_MODE){
-        console.log(message);
         switch(time){
             case "start":
                 console.time("subtime");
@@ -94,7 +94,6 @@ function reloadMenus(){
                 { label: "查看歌曲详情", click: () => {
                     mainWindow.webContents.executeJavaScript("musicInfoFull(rem.playlist, rem.playid)");
                 } },
-                // { label: "下载歌曲封面（啥" },
             ] 
         },
         {
@@ -164,7 +163,6 @@ function reloadMenus(){
         { label: "查看歌曲信息", click: () => {
             mainWindow.webContents.executeJavaScript("musicInfoFull(rem.playlist, rem.playid)");
         } },
-        // { label: "下载歌曲封面（啥" },
         { type: "separator" },
         { type: "checkbox", checked: mainWindow.isFullScreen(), label: "全屏模式", click: () => {
             if (mainWindow.isFullScreen()){
@@ -207,6 +205,7 @@ function reloadMenus(){
         } },
     ]);
 
+    // Set the menus
     electron.Menu.setApplicationMenu(appMenu);
     tray.setContextMenu(trayMenu);
 }
@@ -294,7 +293,7 @@ app.on("ready", () => {
     // Load Discord RPC
     loadRPC();
 });
-// Show original window if user tries to open a second instance to avoid confusions and problems
+// Show original window if user tries to open a second instance
 app.on("second-instance", () => {
     if (mainWindow) {
         if (!mainWindow.isVisible()) mainWindow.show();
@@ -305,6 +304,12 @@ app.on("second-instance", () => {
 // Allow manually quit
 app.on("before-quit", () => {
     isQuitting = true;
+});
+// Disable unexpexted window creations
+app.on('web-contents-created', (event, contents) => {
+    contents.setWindowOpenHandler(() => {
+        return { action: 'deny' };
+    });
 });
 
 /* ------------------------------ */
@@ -345,4 +350,13 @@ electron.ipcMain.on("isPlaying", () => {
 electron.ipcMain.on("isPaused", () => {
     isPlaying = false;
     reloadMenus();
+});
+electron.ipcMain.on("openDoc", () => {
+    var doc = new electron.BrowserWindow({
+        width: 1280,
+        height: 720,
+        icon: path.join(__dirname, "winicon.ico"),
+    });
+    doc.loadURL("https://docs.music.fengzi.dev/");
+    doc.setMenu(null);
 });

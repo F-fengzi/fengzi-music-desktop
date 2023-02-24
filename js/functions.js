@@ -3,7 +3,7 @@
  * 封装函数及UI交互模块
  * 编写：mengkun(https://mkblog.cn)
  * 时间：2018-3-11
- * 疯子音乐已修改，2021/03/03
+ * 疯子音乐已修改，2023/02/23
  *************************************************/
 // 判断是否是移动设备
 var isMobile = {  
@@ -279,7 +279,8 @@ function musicInfo(list, index) {
     
     tempStr += '<br><span class="info-title">操作：</span>' + 
     '<span class="info-btn" onclick="thisDownload(this)" data-list="' + list + '" data-index="' + index + '">下载</span>' + 
-    '<span style="margin-left: 10px" class="info-btn" onclick="thisShare(this)" data-list="' + list + '" data-index="' + index + '">分享</span>';
+    '<span style="margin-left: 10px" class="info-btn" onclick="thisShare(this)" data-list="' + list + '" data-index="' + index + '">分享</span>' + 
+    '<span style="margin-left: 10px" class="info-btn" onclick="thisSaveCover(this)" data-list="' + list + '" data-index="' + index + '">保存封面</span>';
     
     layer.open({
         type: 0,
@@ -395,6 +396,11 @@ function thisShare(obj) {
     ajaxUrl(musicList[$(obj).data("list")].item[$(obj).data("index")], ajaxShare);
 }
 
+// 下载正在播放这首歌的封面 - by 疯子音乐
+function thisSaveCover(obj) {
+    ajaxPic(musicList[$(obj).data("list")].item[$(obj).data("index")], downloadCover);
+}
+
 // 下载歌曲
 // 参数：包含歌曲信息的数组
 function download(music) {
@@ -403,6 +409,15 @@ function download(music) {
         return;
     }
     openDownloadDialog(music.url, music.name + ' - ' + music.artist);
+}
+
+// 下载原尺寸封面 - by 疯子音乐
+function downloadCover(music){
+    if(music.pic == 'err' || music.pic == "" || music.pic == null) {
+        layer.msg('这怎么下啊？下不了啊ヽ(。>Д<)o',{icon: 2});
+        return;
+    }
+    openDownloadDialog(music.pic.substring(0, music.pic.indexOf("?")), music.name + ' - ' + music.artist);
 }
 
 /**
