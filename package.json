@@ -2,7 +2,7 @@
   "name": "fengzi-music-desktop",
   "productName": "疯子音乐",
   "copyright": "Copyright 2023 Fengzi. All Rights Reserved. Based on open-source projects.",
-  "version": "0.4.1",
+  "version": "0.4.2",
   "description": "The official desktop client for Fengzi Music",
   "main": "main.js",
   "author": "Fengzi",
@@ -18,11 +18,11 @@
     "appId": "com.fengzi.music",
     "win": {
       "target": "nsis",
-      "icon": "winicon.ico"
+      "icon": "icon.png"
     },
     "nsis": {
-      "installerIcon": "winicon.ico",
-      "uninstallerIcon": "winicon.ico",
+      "installerIcon": "icon.png",
+      "uninstallerIcon": "icon.png",
       "uninstallDisplayName": "疯子音乐",
       "oneClick": false,
       "allowToChangeInstallationDirectory": true,

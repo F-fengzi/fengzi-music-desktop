@@ -1,11 +1,11 @@
 // Constants
 const DEV_MODE = false;
-const APP_VERSION = "0.4.1 Beta";
+const APP_VERSION = "0.4.2 Beta";
 
 // Development Timers
 function devMsg(message, time){
-    console.log(message);
     if(DEV_MODE){
+        console.log(message);
         switch(time){
             case "start":
                 console.time("subtime");
@@ -29,6 +29,9 @@ devMsg("", "start");
 const electron = require("electron");
 const path = require("path");
 const app = electron.app;
+
+// Icon path
+const ICON = path.join(__dirname, "icon.png");
 
 // Limit one instance of app
 if (!app.requestSingleInstanceLock()) app.quit();
@@ -103,7 +106,7 @@ function reloadMenus(){
                     var doc = new electron.BrowserWindow({
                         width: 1280,
                         height: 720,
-                        icon: path.join(__dirname, "winicon.ico"),
+                        icon: ICON,
                     });
                     doc.loadURL("https://docs.music.fengzi.dev/");
                     doc.setMenu(null);
@@ -112,7 +115,7 @@ function reloadMenus(){
                     var about = new electron.BrowserWindow({
                         width: 720,
                         height: 480,
-                        icon: path.join(__dirname, "winicon.ico"),
+                        icon: ICON,
                     });
                     about.loadFile(path.join(__dirname, "about.html"));
                     about.setMenu(null);
@@ -189,7 +192,7 @@ function reloadMenus(){
             var doc = new electron.BrowserWindow({
                 width: 1280,
                 height: 720,
-                icon: path.join(__dirname, "winicon.ico"),
+                icon: ICON,
             });
             doc.loadURL("https://docs.music.fengzi.dev/");
             doc.setMenu(null);
@@ -198,7 +201,7 @@ function reloadMenus(){
             var about = new electron.BrowserWindow({
                 width: 720,
                 height: 480,
-                icon: path.join(__dirname, "winicon.ico"),
+                icon: ICON,
             });
             about.loadFile(path.join(__dirname, "about.html"));
             about.setMenu(null);
@@ -231,7 +234,7 @@ app.on("ready", () => {
         width: 1280,
         height: 720,
         show: false,
-        icon: path.join(__dirname, "winicon.ico"),
+        icon: ICON,
         autoHideMenuBar: true,
         webPreferences: {
             preload: path.join(__dirname, "preload.js"),
@@ -244,7 +247,12 @@ app.on("ready", () => {
     }
 
     // Load system tray
-    tray = new electron.Tray(path.join(__dirname, "icon.ico"));
+    try{
+        tray = new electron.Tray(path.join(__dirname, "trayicon.ico"));
+    }catch (error){
+        tray = new electron.Tray(path.join(__dirname, "trayicon.png"));
+        devMsg("Using non-Windows tray icon");
+    }
     tray.setToolTip("疯子音乐 - 畅听无止境");
     tray.setIgnoreDoubleClickEvents(true);
     tray.on("click", () => {
@@ -279,7 +287,7 @@ app.on("ready", () => {
         var oof = new electron.BrowserWindow({
             width: 640,
             height: 480,
-            icon: path.join(__dirname, "winicon.ico"),
+            icon: ICON,
         });
         oof.loadFile(path.join(__dirname, "oof.html"));
         oof.setMenu(null);
@@ -355,7 +363,7 @@ electron.ipcMain.on("openDoc", () => {
     var doc = new electron.BrowserWindow({
         width: 1280,
         height: 720,
-        icon: path.join(__dirname, "winicon.ico"),
+        icon: ICON,
     });
     doc.loadURL("https://docs.music.fengzi.dev/");
     doc.setMenu(null);

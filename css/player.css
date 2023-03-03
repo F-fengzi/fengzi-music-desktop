@@ -427,6 +427,7 @@ body {
     width: 100px;
     height: 100px;
     margin: 10px auto;
+    border-radius: 6px;
     cursor: pointer;
 }
 /* 正在播放的列表  */
@@ -501,6 +502,7 @@ body {
     vertical-align: middle;
     width: 186px;
     height: 186px;
+    border-radius: 6px;
 }
 
 /* 歌词显示区域 */
