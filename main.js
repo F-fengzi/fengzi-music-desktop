@@ -251,7 +251,7 @@ app.on("ready", () => {
         tray = new electron.Tray(path.join(__dirname, "trayicon.ico"));
     }catch (error){
         tray = new electron.Tray(path.join(__dirname, "trayicon.png"));
-        devMsg("Using non-Windows tray icon");
+        devMsg("Using non-Windows tray icon: " + error);
     }
     tray.setToolTip("疯子音乐 - 畅听无止境");
     tray.setIgnoreDoubleClickEvents(true);

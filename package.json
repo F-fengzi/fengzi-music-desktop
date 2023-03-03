@@ -18,11 +18,11 @@
     "appId": "com.fengzi.music",
     "win": {
       "target": "nsis",
-      "icon": "icon.png"
+      "icon": "winicon.ico"
     },
     "nsis": {
-      "installerIcon": "icon.png",
-      "uninstallerIcon": "icon.png",
+      "installerIcon": "winicon.ico",
+      "uninstallerIcon": "winicon.ico",
       "uninstallDisplayName": "疯子音乐",
       "oneClick": false,
       "allowToChangeInstallationDirectory": true,
