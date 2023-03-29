@@ -2,7 +2,7 @@
   "name": "fengzi-music-desktop",
   "productName": "疯子音乐",
   "copyright": "Copyright 2023 Fengzi. All Rights Reserved. Based on open-source projects.",
-  "version": "0.4.2",
+  "version": "0.4.3",
   "description": "The official desktop client for Fengzi Music",
   "main": "main.js",
   "author": "Fengzi",
