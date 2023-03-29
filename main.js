@@ -1,6 +1,6 @@
 // Constants
 const DEV_MODE = false;
-const APP_VERSION = "0.4.2 Beta";
+const APP_VERSION = "0.4.3 Beta";
 
 // Development Timers
 function devMsg(message, time){
@@ -28,6 +28,7 @@ devMsg("", "start");
 // Load dependencies
 const electron = require("electron");
 const path = require("path");
+const windowStateKeeper = require("electron-window-state");
 const app = electron.app;
 
 // Icon path
@@ -229,10 +230,18 @@ devMsg("Initialized", "time");
 app.on("ready", () => {
     devMsg("App ready", "time");
 
+    // Set default window state fallback
+    let mainWindowState = windowStateKeeper({
+        defaultWidth: 1280,
+        defaultHeight: 720,
+    });
+
     // Load main window
     mainWindow = new electron.BrowserWindow({
-        width: 1280,
-        height: 720,
+        x: mainWindowState.x,
+        y: mainWindowState.y,
+        width: mainWindowState.width,
+        height: mainWindowState.height,
         show: false,
         icon: ICON,
         autoHideMenuBar: true,
@@ -240,6 +249,7 @@ app.on("ready", () => {
             preload: path.join(__dirname, "preload.js"),
         },
     });
+    mainWindowState.manage(mainWindow); // Remember window size and position
     mainWindow.loadFile(path.join(__dirname, "index.html"));
     devMsg("Main content loaded", "time");
     if (DEV_MODE){
