@@ -1,6 +1,6 @@
 // Constants
 const DEV_MODE = false;
-const APP_VERSION = "0.4.3 Beta";
+const APP_VERSION = "0.4.4 Beta";
 
 // Development Timers
 function devMsg(message, time){
@@ -290,6 +290,13 @@ app.on("ready", () => {
             event.preventDefault();
             mainWindow.hide();
         }
+    });
+    // Window focus and blur indicator
+    mainWindow.on('focus', () => {
+        mainWindow.webContents.executeJavaScript("windowFocused()");
+    });
+    mainWindow.on('blur', () => {
+        mainWindow.webContents.executeJavaScript("windowBlurred()");
     });
     // On unresponsive
     mainWindow.on("unresponsive", () => {

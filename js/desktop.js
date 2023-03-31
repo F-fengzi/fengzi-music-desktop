@@ -6,6 +6,14 @@ function toggleQuitAfter(){
     quitAfter ? window.bridge.quitAfterEnabled() : window.bridge.quitAfterDisabled();
 }
 
+// 窗口活跃指示
+function windowFocused(){
+    document.querySelector(".focus-indicator").style.opacity = 0.6;
+}
+function windowBlurred(){
+    document.querySelector(".focus-indicator").style.opacity = 0.8;
+}
+
 // 侦测键盘按键
 document.addEventListener("keydown", event => {
     switch (event.key){

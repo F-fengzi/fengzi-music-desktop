@@ -7,6 +7,13 @@
  * 疯子音乐已修改，2020/03/03
  *************************************************/
 
+/* 小于 1000px 并大于 901px 采用这个样式 by 疯子音乐*/
+@media screen and (max-width: 1000px) and (min-width: 901px) {
+    .auth-name,.music-album {
+        width: 120px;
+    }
+}
+
 /* 小于 900px 采用这个样式 */
 @media screen and (max-width: 900px) {
     /*隐藏头部logo*/
@@ -58,6 +65,11 @@
         display: block;
         border-bottom: 3px solid #A2A0A0;
         margin-top: -3px;
+    }
+
+    /* 将宽度约束容器改回默认最大宽度 by 疯子音乐 */
+    .container {
+        max-width: 1200px;
     }
     
     /* 中部容器区域 */
