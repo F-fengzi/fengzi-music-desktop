@@ -77,6 +77,9 @@ body {
     background-image: linear-gradient(200deg, #C46A95, #4F2F60);
     overflow: hidden;
 }
+.offline {
+    background-image: linear-gradient(200deg, #d14854, #6b1427);
+}
 /* 模糊图像层 */
 #blur-img {
     position: fixed;

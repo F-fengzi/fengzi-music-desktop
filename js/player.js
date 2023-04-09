@@ -29,6 +29,26 @@ if ("mediaSession" in navigator) {
     navigator.mediaSession.setActionHandler("nexttrack", () => { nextMusic(); });
 }
 
+// 网络离线指示 - by 疯子音乐
+var listsInitialized = false;
+function updateOffline(){
+    if (!navigator.onLine){
+        document.body.classList.add("offline");
+        document.querySelector(".logo").innerHTML = "疯子音乐（已离线）";
+    }else{
+        document.body.classList.remove("offline");
+        document.querySelector(".logo").innerHTML = "疯子音乐";
+        if (!listsInitialized){
+            initList();
+            listsInitialized = true;
+            layer.msg("已重新连接到网络 歌单加载完成 (oﾟvﾟ)ノ", {icon: 1});
+        }
+    }
+}
+window.addEventListener("online", updateOffline);
+window.addEventListener("offline", updateOffline);
+updateOffline();
+
 /*******************************************************
  * 以下内容是播放器核心文件，不建议进行修改，否则可能导致播放器无法正常使用!
  * 

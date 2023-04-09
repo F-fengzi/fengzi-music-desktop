@@ -263,7 +263,13 @@ $(function(){
     });
     
     // 初始化播放列表
-    initList(); 
+    // 无网络时暂缓歌单加载 - by 疯子音乐
+    if (!navigator.onLine) {
+        layer.msg("歌单什么的 等有网再加载吧 /(ㄒoㄒ)/~~", {icon: 2});
+    }else{
+        initList();
+        listsInitialized = true;
+    }
 });
 
 // 展现系统列表中任意首歌的歌曲信息

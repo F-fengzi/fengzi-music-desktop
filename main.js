@@ -1,6 +1,6 @@
 // Constants
 const DEV_MODE = false;
-const APP_VERSION = "0.4.4 Beta";
+const APP_VERSION = "0.4.5 Beta";
 
 // Development Timers
 function devMsg(message, time){
@@ -105,7 +105,7 @@ function reloadMenus(){
             submenu: [
                 { label: "查看文档", click: () => {
                     var doc = new electron.BrowserWindow({
-                        width: 1280,
+                        width: 1080,
                         height: 720,
                         icon: ICON,
                     });
@@ -191,7 +191,7 @@ function reloadMenus(){
         { type: "separator" },
         { label: "查看文档", click: () => {
             var doc = new electron.BrowserWindow({
-                width: 1280,
+                width: 1080,
                 height: 720,
                 icon: ICON,
             });
@@ -378,7 +378,7 @@ electron.ipcMain.on("isPaused", () => {
 });
 electron.ipcMain.on("openDoc", () => {
     var doc = new electron.BrowserWindow({
-        width: 1280,
+        width: 1080,
         height: 720,
         icon: ICON,
     });
