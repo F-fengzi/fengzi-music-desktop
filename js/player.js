@@ -35,6 +35,7 @@ function updateOffline(){
     if (!navigator.onLine){
         document.body.classList.add("offline");
         document.querySelector(".logo").innerHTML = "疯子音乐（已离线）";
+        window.bridge.isOffline();
     }else{
         document.body.classList.remove("offline");
         document.querySelector(".logo").innerHTML = "疯子音乐";
@@ -43,11 +44,12 @@ function updateOffline(){
             listsInitialized = true;
             layer.msg("已重新连接到网络 歌单加载完成 (oﾟvﾟ)ノ", {icon: 1});
         }
+        window.bridge.isOnline();
     }
 }
 window.addEventListener("online", updateOffline);
 window.addEventListener("offline", updateOffline);
-updateOffline();
+window.addEventListener("load", updateOffline);
 
 /*******************************************************
  * 以下内容是播放器核心文件，不建议进行修改，否则可能导致播放器无法正常使用!

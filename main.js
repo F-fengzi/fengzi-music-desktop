@@ -1,6 +1,6 @@
 // Constants
+const APP_VERSION = "0.4.6 Beta";
 const DEV_MODE = false;
-const APP_VERSION = "0.4.5 Beta";
 
 // Development Timers
 function devMsg(message, time){
@@ -40,12 +40,15 @@ if (!app.requestSingleInstanceLock()) app.quit();
 // Load basics
 let mainWindow = null;
 let tray = null;
+
 let appMenu = null;
 let trayMenu = null;
 let contextMenu = null;
+
 let isQuitting = false;
 let quitAfter = false;
 let isPlaying = false;
+
 function reloadMenus(){
     // Define app menu (mainly for macOS)
     appMenu = new electron.Menu.buildFromTemplate([
@@ -98,30 +101,14 @@ function reloadMenus(){
                 { label: "查看歌曲详情", click: () => {
                     mainWindow.webContents.executeJavaScript("musicInfoFull(rem.playlist, rem.playid)");
                 } },
-            ] 
+            ],
         },
         {
             label: "关于",
             submenu: [
-                { label: "查看文档", click: () => {
-                    var doc = new electron.BrowserWindow({
-                        width: 1080,
-                        height: 720,
-                        icon: ICON,
-                    });
-                    doc.loadURL("https://docs.music.fengzi.dev/");
-                    doc.setMenu(null);
-                } },
-                { label: "关于疯子音乐", click: () => {
-                    var about = new electron.BrowserWindow({
-                        width: 720,
-                        height: 480,
-                        icon: ICON,
-                    });
-                    about.loadFile(path.join(__dirname, "about.html"));
-                    about.setMenu(null);
-                } },
-            ]
+                { label: "查看文档", click: openDoc },
+                { label: "关于疯子音乐", click: openAbout },
+            ],
         },
     ]);
     // Define system tray menu
@@ -189,24 +176,8 @@ function reloadMenus(){
             mainWindow.webContents.executeJavaScript("toggleQuitAfter()");
         } },
         { type: "separator" },
-        { label: "查看文档", click: () => {
-            var doc = new electron.BrowserWindow({
-                width: 1080,
-                height: 720,
-                icon: ICON,
-            });
-            doc.loadURL("https://docs.music.fengzi.dev/");
-            doc.setMenu(null);
-        } },
-        { label: "关于疯子音乐", click: () => {
-            var about = new electron.BrowserWindow({
-                width: 720,
-                height: 480,
-                icon: ICON,
-            });
-            about.loadFile(path.join(__dirname, "about.html"));
-            about.setMenu(null);
-        } },
+        { label: "查看文档", click: openDoc },
+        { label: "关于疯子音乐", click: openAbout },
     ]);
 
     // Set the menus
@@ -222,6 +193,35 @@ function loadRPC(){
     });
     devMsg("Discord status module loaded", "time");
 }
+
+function openAbout(){
+    var about = new electron.BrowserWindow({
+        width: 720,
+        height: 480,
+        icon: ICON,
+    });
+    about.loadFile(path.join(__dirname, "about.html"));
+    about.setMenu(null);
+}
+function openOof(){
+    var oof = new electron.BrowserWindow({
+        width: 640,
+        height: 480,
+        icon: ICON,
+    });
+    oof.loadFile(path.join(__dirname, "oof.html"));
+    oof.setMenu(null);
+}
+function openDoc(){
+    var doc = new electron.BrowserWindow({
+        width: 1080,
+        height: 720,
+        icon: ICON,
+    });
+    doc.loadURL("https://docs.music.fengzi.dev/");
+    doc.setMenu(null);
+}
+
 devMsg("Initialized", "time");
 
 /* ------------------------------ */
@@ -235,7 +235,6 @@ app.on("ready", () => {
         defaultWidth: 1280,
         defaultHeight: 720,
     });
-
     // Load main window
     mainWindow = new electron.BrowserWindow({
         x: mainWindowState.x,
@@ -252,9 +251,7 @@ app.on("ready", () => {
     mainWindowState.manage(mainWindow); // Remember window size and position
     mainWindow.loadFile(path.join(__dirname, "index.html"));
     devMsg("Main content loaded", "time");
-    if (DEV_MODE){
-        mainWindow.webContents.openDevTools();
-    }
+    if (DEV_MODE) mainWindow.webContents.openDevTools();
 
     // Load system tray
     try{
@@ -301,13 +298,7 @@ app.on("ready", () => {
     // On unresponsive
     mainWindow.on("unresponsive", () => {
         devMsg("Unresponsive");
-        var oof = new electron.BrowserWindow({
-            width: 640,
-            height: 480,
-            icon: ICON,
-        });
-        oof.loadFile(path.join(__dirname, "oof.html"));
-        oof.setMenu(null);
+        openOof();
     });
     mainWindow.on("responsive", () => {
         devMsg("Responsive again");
@@ -340,6 +331,24 @@ app.on('web-contents-created', (event, contents) => {
 /* ------------------------------ */
 
 // IPCs
+electron.ipcMain.on("isPlaying", () => {
+    isPlaying = true;
+    reloadMenus();
+});
+electron.ipcMain.on("isPaused", () => {
+    isPlaying = false;
+    reloadMenus();
+});
+electron.ipcMain.on("isOnline", () => {
+    tray.setToolTip("疯子音乐 - 畅听无止境");
+});
+electron.ipcMain.on("isOffline", () => {
+    tray.setToolTip("疯子音乐 - 已离线");
+});
+electron.ipcMain.on("openDoc", openDoc);
+electron.ipcMain.on("contextMenu", () => {
+    contextMenu.popup({window: mainWindow});
+});
 electron.ipcMain.on("exitMaximized", () => {
     if (mainWindow.isFullScreen()){
         mainWindow.setFullScreen(false);
@@ -354,12 +363,6 @@ electron.ipcMain.on("toggleMaximized", () => {
     }
     reloadMenus();
 });
-electron.ipcMain.on("contextMenu", () => {
-    contextMenu.popup({window: mainWindow});
-});
-electron.ipcMain.on("appQuit", () => {
-    app.quit();
-});
 electron.ipcMain.on("quitAfterEnabled", () => {
     quitAfter = true;
     reloadMenus();
@@ -368,20 +371,6 @@ electron.ipcMain.on("quitAfterDisabled", () => {
     quitAfter = false;
     reloadMenus();
 });
-electron.ipcMain.on("isPlaying", () => {
-    isPlaying = true;
-    reloadMenus();
-});
-electron.ipcMain.on("isPaused", () => {
-    isPlaying = false;
-    reloadMenus();
-});
-electron.ipcMain.on("openDoc", () => {
-    var doc = new electron.BrowserWindow({
-        width: 1080,
-        height: 720,
-        icon: ICON,
-    });
-    doc.loadURL("https://docs.music.fengzi.dev/");
-    doc.setMenu(null);
+electron.ipcMain.on("appQuit", () => {
+    app.quit();
 });
