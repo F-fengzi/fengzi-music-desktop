@@ -10,7 +10,7 @@
 /* 加载本地字体文件 by Fengzi Music Desktop */
 @font-face {
     font-family: 'Poppins';
-    src: url("../Poppins-Regular.ttf") format("truetype");
+    src: url("../desktop/Poppins-Regular.ttf") format("truetype");
 }
 
 blockquote, body, button, dd, dl, dt, fieldset, form, h1, h2, h3, h4, h5, h6, hr, html, input, lengend, li, ol, p, pre, td, textarea, th, ul {

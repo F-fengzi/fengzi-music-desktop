@@ -1,29 +1,36 @@
 {
   "name": "fengzi-music-desktop",
   "productName": "疯子音乐",
-  "copyright": "Copyright 2023 Fengzi. All Rights Reserved. Based on open-source projects.",
-  "version": "0.4.6",
+  "copyright": "Copyright 2025 Fengzi. All Rights Reserved. Based on open-source projects.",
+  "version": "0.4.7",
   "description": "The official desktop client for Fengzi Music",
   "main": "main.js",
   "author": "Fengzi",
   "homepage": "https://music.fengzi.dev/",
+  "scripts": {
+    "start": "electron .",
+    "dist": "electron-builder",
+    "dist:mwl": "electron-builder -mwl",
+    "dist:publish-mwl": "electron-builder -mwl --publish always"
+  },
   "dependencies": {
     "discord-rich-presence": "^0.0.8",
+    "electron-updater": "^6.3.9",
     "electron-window-state": "^5.0.3"
   },
   "devDependencies": {
-    "electron": "^24.0.0",
-    "electron-builder": "^23.6.0"
+    "electron": "^34.0.0",
+    "electron-builder": "^25.0.0"
   },
   "build": {
     "appId": "com.fengzi.music",
     "win": {
       "target": "nsis",
-      "icon": "winicon.ico"
+      "icon": "icons/winicon.ico"
     },
     "nsis": {
-      "installerIcon": "winicon.ico",
-      "uninstallerIcon": "winicon.ico",
+      "installerIcon": "icons/winicon.ico",
+      "uninstallerIcon": "icons/winicon.ico",
       "uninstallDisplayName": "疯子音乐",
       "oneClick": false,
       "allowToChangeInstallationDirectory": true,
@@ -32,19 +39,12 @@
     "mac": {
       "category": "public.app-category.music",
       "target": "dmg",
-      "icon": "macicon.png"
+      "icon": "icons/macicon.png"
     },
     "dmg": {
-      "icon": "macicon.png",
+      "icon": "icons/macicon.png",
       "iconSize": 96,
       "iconTextSize": 14
     }
-  },
-  "scripts": {
-    "start": "electron .",
-    "test": "echo success",
-    "dist": "electron-builder",
-    "dist:mwl": "electron-builder -mwl",
-    "dist:publish-mwl": "electron-builder -mwl --publish always"
   }
 }
